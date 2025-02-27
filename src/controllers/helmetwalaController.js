@@ -1,5 +1,6 @@
 import Helmetwala from '../models/Helmetwala.js';
 import cloudinary from '../config/cloudinary.js';
+import fs from 'fs';
 
 export const createHelmetwalaAd = async (req, res) => {
   try {
@@ -11,6 +12,8 @@ export const createHelmetwalaAd = async (req, res) => {
       folder: 'helmetwala',
       resource_type: 'image',
     });
+
+    fs.unlinkSync(req.file.path);
 
     const helmetwalaAd = new Helmetwala({
       imageUrl: result.secure_url,
@@ -63,6 +66,8 @@ export const editHelmetwalaAd = async (req, res) => {
         folder: 'helmetwala',
         resource_type: 'image',
       });
+
+      fs.unlinkSync(req.file.path);
 
       helmetwalaAd.imageUrl = result.secure_url;
     }

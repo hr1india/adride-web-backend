@@ -1,5 +1,6 @@
 import Autowala from '../models/Autowala.js';
 import cloudinary from '../config/cloudinary.js';
+import fs from 'fs';
 
 export const createAutowalaAd = async (req, res) => {
   try {
@@ -13,6 +14,8 @@ export const createAutowalaAd = async (req, res) => {
       folder: 'autowala',
       resource_type: 'image',
     });
+
+    fs.unlinkSync(req.file.path);
 
     const autowalaAd = new Autowala({
       registrationNumber,
@@ -67,6 +70,8 @@ export const editAutowalaAd = async (req, res) => {
         folder: 'autowala',
         resource_type: 'image',
       });
+
+      fs.unlinkSync(req.file.path);
 
       autowalaAd.imageUrl = result.secure_url;
     }
