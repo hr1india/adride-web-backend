@@ -15,6 +15,7 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import helmetwalaRoutes from './routes/helmetwalaRoutes.js';
 import { notFound, errorHandler } from './middlewares/errorHandler.js';
 import adminRoutes from "./routes/adminRoutes.js";
+import dashboardRoutes from './routes/dashboardRoutes.js';
 
 dotenv.config();
 connectDB();
@@ -52,6 +53,7 @@ app.use('/api/autowala', autowalaRoutes);
 app.use('/api/helmetwala', helmetwalaRoutes);
 app.use('/api/payment', paymentRoutes); 
 app.use("/api/admin", adminRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 
 app.get('/', (req, res) => {
