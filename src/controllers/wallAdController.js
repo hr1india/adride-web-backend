@@ -1,5 +1,6 @@
 import WallAd from '../models/wallAd.js';
 import cloudinary from '../config/cloudinary.js';
+import fs from 'fs';
 
 export const createWallAd = async (req, res) => {
   try {
@@ -18,6 +19,8 @@ export const createWallAd = async (req, res) => {
       folder: 'wallads',
       resource_type: 'image',
     });
+
+    fs.unlinkSync(req.file.path);
 
     console.log('Cloudinary Upload Success:', result.secure_url);
 
@@ -78,6 +81,8 @@ export const editWallAd = async (req, res) => {
         folder: 'wallads',
         resource_type: 'image',
       });
+
+      fs.unlinkSync(req.file.path);
 
       if (wallAd.imageUrl) {
         const oldImageUrlParts = wallAd.imageUrl.split('/');

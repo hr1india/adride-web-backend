@@ -1,5 +1,6 @@
 import Ad from '../models/ad.js';
 import cloudinary from '../config/cloudinary.js';
+import fs from 'fs';
 
 export const createAd = async (req, res) => {
   try {
@@ -21,6 +22,8 @@ export const createAd = async (req, res) => {
     });
 
     console.log('Cloudinary Upload Success:', result.secure_url);
+    fs.unlinkSync(req.file.path);
+    console.log('file removed from /uploads folder');
 
     const ad = new Ad({
       campaignName,
@@ -75,6 +78,8 @@ export const editAd = async (req, res) => {
         folder: 'ads',
         resource_type: 'image',
       });
+
+      fs.unlinkSync(req.file.path);
 
       if (ad.imageUrl) {
         const oldImageId = ad.imageUrl.split('/').pop().split('.')[0];
