@@ -7,8 +7,13 @@ const wallAdSchema = new mongoose.Schema({
   height: { type: Number, required: true },
   breadth: { type: Number, required: true },
   monthlyPrice: { type: Number, required: true },
-  availableFrom: { type: Date, required: true },
-  availableTo: { type: Date, required: true },
+  availableFrom: { type: String, required: true },
+  availableTo: { type: String, required: true },
+  isApproved: { 
+    type: String, 
+    enum: ["approved", "rejected", "pending"], 
+    default: "pending" 
+  },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
 },{ timestamps: true });
 
