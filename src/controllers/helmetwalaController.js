@@ -107,7 +107,7 @@ export const deleteHelmetwalaAd = async (req, res) => {
 // export const getMyHelmetwalaAds = async (req, res) => {
 //   try {
 //     const ads = await Helmetwala.find({ createdBy: req.user._id }).populate('createdBy', 'name email');
-    
+
 //     if (ads.length === 0) {
 //       return res.status(404).json({ success: false, error: 'No ads found for this user' });
 //     }
@@ -118,19 +118,47 @@ export const deleteHelmetwalaAd = async (req, res) => {
 //   }
 // };
 
-export const changeHelmetwalaAdStatus = async (req, res) => {
+export const getAllApprovedHelmetwalaAds = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    const helmetwalaAd = await Helmetwala.findByIdAndUpdate(id, { status }, { new: true });
-
-    if (!helmetwalaAd) {
-      return res.status(404).json({ success: false, error: 'Ad not found' });
-    }
-
-    res.status(200).json({ success: true, message: 'Status updated successfully', helmetwalaAd });
+    const ads = await Helmetwala.find({ status: 'approved' }).populate('createdBy', 'name email');
+    res.json({ success: true, ads });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
-};
+}
+
+export const getAllRejectedHelmetwalaAds = async (req, res) => {
+  try {
+    const ads = await Helmetwala.find({ status: 'rejected' }).populate('createdBy', 'name email');
+    res.json({ success: true, ads });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+export const getAllPendingHelmetwalaAds = async (req, res) => {
+  try {
+    const ads = await Helmetwala.find({ status: 'pending' }).populate('createdBy', 'name email');
+    res.json({ success: true, ads });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+
+  export const changeHelmetwalaAdStatus = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const helmetwalaAd = await Helmetwala.findByIdAndUpdate(id, { status }, { new: true });
+
+      if (!helmetwalaAd) {
+        return res.status(404).json({ success: false, error: 'Ad not found' });
+      }
+
+      res.status(200).json({ success: true, message: 'Status updated successfully', helmetwalaAd });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  };

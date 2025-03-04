@@ -1,4 +1,7 @@
 import WallAd from '../models/wallAd.js';
+import Helmetwala from '../models/Helmetwala.js';
+import autowala from '../models/Autowala.js';
+
 import cloudinary from '../config/cloudinary.js';
 import fs from 'fs';
 
@@ -62,6 +65,35 @@ export const getMyWallAds = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+export const getAllApprovedWallAds = async (req, res) => {
+  try {
+    const wallAds = await WallAd.find({ isApproved: 'approved' });
+    res.json({ success: true, wallAds });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllRejectedWallAds = async (req, res) => {
+  try {
+    const wallAds = await WallAd.find({ isApproved: 'rejected' });
+    res.json({ success: true, wallAds });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getAllPendingWallAds = async (req, res) => {
+  try {
+    const wallAds = await WallAd.find({ isApproved: 'pending' });
+    res.json({ success: true, wallAds });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
 export const editWallAd = async (req, res) => {
   try {
     const { wallName, location, height, breadth, monthlyPrice, availableFrom, availableTo } = req.body;
@@ -137,21 +169,30 @@ export const deleteWallAd = async (req, res) => {
 };
 
 export const changeWallAdStatus = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
+    try {
+        const { id } = req.params;
+        const { status } = req.body; // Expecting status in the request body
+        console.log(req.body)
 
-    const wallAd = await WallAd.findByIdAndUpdate(id, { status }, { new: true });
+        // Validate status
+        if (!["approved", "rejected", "pending"].includes(status)) {
+            return res.status(400).json({ message: "Invalid status value" });
+        }
 
-    if (!wallAd) {
-      return res.status(404).json({ success: false, error: 'Ad not found' });
+        const wallAd = await WallAd.findById(id);
+        if (!wallAd) {
+            return res.status(404).json({ message: "Wall Ad not found" });
+        }
+
+        wallAd.isApproved = status; // Update status
+        await wallAd.save();
+
+        res.status(200).json({ message: `Ad status changed to ${status}`, wallAd });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
     }
-
-    res.status(200).json({ success: true, message: 'Status updated successfully', wallAd });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
 };
+
 
 export const getAllWallById = async (req, res) => {
   try {
